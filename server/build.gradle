@@ -1,0 +1,57 @@
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+apply plugin:'application'
+
+mainClassName = "com.nocountryforgeeks.blog.grpc.chat.server.ChatServer"
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+  }
+  
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+        proto {
+      		srcDir '../proto'
+    	}
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'io.grpc:grpc-netty:1.13.1'
+	compile 'io.grpc:grpc-protobuf:1.13.1'
+	compile 'io.grpc:grpc-stub:1.13.1'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:3.5.1-1"
+  }
+  plugins {
+    grpc {
+      artifact = 'io.grpc:protoc-gen-grpc-java:1.13.1'
+    }
+  }
+  generateProtoTasks {
+    all()*.plugins {
+      grpc {}
+    }
+  }
+}
+
